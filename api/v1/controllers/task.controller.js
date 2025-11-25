@@ -72,7 +72,7 @@ module.exports.detail = async (req, res) => {
 
 }
 
-//[GET] /api/v1/tasks/change-status/:id 
+//[PATCH] /api/v1/tasks/change-status/:id 
 module.exports.changeStatus = async (req, res) => {
     try {
         const id = req.params.id;
@@ -96,7 +96,7 @@ module.exports.changeStatus = async (req, res) => {
 
 }
 
-//[GET] /api/v1/tasks/change-multi
+//[PATCH] /api/v1/tasks/change-multi
 module.exports.changeMulti = async (req, res) => {
     try {
         const { ids, key, value } = req.body;
@@ -107,6 +107,18 @@ module.exports.changeMulti = async (req, res) => {
                     _id: { $in: ids }
                 }, {
                     status: value
+                })
+                res.json({
+                    code: 200,
+                    message: "Cap nhat thanh cong"
+                })
+                break;
+            case "delete":
+                await Task.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    deleted: true,
+                    deletedAt: new Date()
                 })
                 res.json({
                     code: 200,
@@ -130,7 +142,7 @@ module.exports.changeMulti = async (req, res) => {
     }
 }
 
-//[GET] /api/v1/tasks/create
+//[POST] /api/v1/tasks/create
 module.exports.create = async (req, res) => {
     try {
         const task = new Task(req.body);
@@ -149,7 +161,7 @@ module.exports.create = async (req, res) => {
     }
 }
 
-//[GET] /api/v1/tasks/edit/:id
+//[PATCH] /api/v1/tasks/edit/:id
 module.exports.edit = async (req, res) => {
     try {
         const id = req.params.id;
@@ -166,4 +178,25 @@ module.exports.edit = async (req, res) => {
         });
     }
 }
+
+//[DELETE] /api/v1/tasks/delete/:id
+module.exports.delete = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Task.updateOne({ _id: id }, {
+            deleted: true,
+            deletedAt: new Date()
+        })
+        res.json({
+            code: 200,
+            message: "Xoa Thanh cong"
+        })
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Loi"
+        })
+    }
+}
+
 
