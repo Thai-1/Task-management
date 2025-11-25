@@ -148,3 +148,22 @@ module.exports.create = async (req, res) => {
         })
     }
 }
+
+//[GET] /api/v1/tasks/edit/:id
+module.exports.edit = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const content = req.body;
+        await Task.updateOne({ _id: id }, content);
+        res.json({
+            code: 200,
+            message: "Thanh cong"
+        });
+    } catch (error) {
+        res.json({
+            code: 400,
+            error: "Loi"
+        });
+    }
+}
+
