@@ -17,7 +17,7 @@ module.exports.index = async (req, res) => {
     //Seach
     let objectSearch = seachHelper(req.query);
 
-    if(req.query.keyword) {
+    if (req.query.keyword) {
         find.title = objectSearch.regex;
     }
 
@@ -40,15 +40,15 @@ module.exports.index = async (req, res) => {
     //Sort
     const sort = {};
 
-    if(req.query.sortKey && req.query.sortValue) {
+    if (req.query.sortKey && req.query.sortValue) {
         sort[req.query.sortKey] = req.query.sortValue;
     }
     //End Sort
 
     const tasks = await Task.find(find)
-    .sort(sort)
-    .limit(objectPagination.limitItems)
-    .skip(objectPagination.skip);
+        .sort(sort)
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip);
 
     res.json(tasks);
 }
@@ -69,5 +69,29 @@ module.exports.detail = async (req, res) => {
         res.json("khong tim thay");
     }
 
+
+}
+
+//[GET] /api/v1/tasks/change-status/:id 
+module.exports.changeStatus = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const status = req.body.status;
+
+        await Task.updateOne({
+            _id: id
+        }, {
+            status: status
+        })
+        res.json({
+            code: 200,
+            message: "Cap nhat trang thai thanh cong"
+        })
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Khong ton tai"
+        })
+    }
 
 }
