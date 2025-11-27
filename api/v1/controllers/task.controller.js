@@ -6,6 +6,10 @@ const seachHelper = require("../../../helpers/search")
 module.exports.index = async (req, res) => {
 
     const find = {
+        $or: [
+            {createdBy: req.user.id},
+            {listUser: req.user.id}
+        ],
         deleted: false
     }
     const status = req.query.status;
@@ -52,8 +56,6 @@ module.exports.index = async (req, res) => {
 
     res.json(tasks);
 }
-
-
 
 //[GET] /api/v1/tasks/detail/:id 
 module.exports.detail = async (req, res) => {
